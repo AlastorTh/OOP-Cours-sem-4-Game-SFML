@@ -17,8 +17,12 @@ private:
 	sf::Event ev;
 	sf::VideoMode videoMode;
 
+	// Объекты игры
+	sf::RectangleShape enemy;
+	// Функции инициализации
 	void initVar();
 	void initWindow();
+	void initEnemies();
 public:
 
 	// Конструкторы / деструкторы

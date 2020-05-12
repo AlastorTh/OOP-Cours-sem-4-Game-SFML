@@ -4,6 +4,7 @@
 void Game::initVar()
 {
 	this->window = nullptr;
+
 }
 
 void Game::initWindow()
@@ -12,12 +13,24 @@ void Game::initWindow()
 	this->videoMode.width = 800;
 	this->window = new sf::RenderWindow(sf::VideoMode(this->videoMode), "My Test Win", sf::Style::Titlebar
 	| sf::Style::Close);
+	this->window->setFramerateLimit(60); // fps 
 }
 
+void Game::initEnemies()
+{
+	this->enemy.setPosition(10.f, 10.f);
+	this->enemy.setSize(sf::Vector2f(100.f, 100.f));
+	this->enemy.setFillColor(sf::Color::Cyan);
+	this->enemy.setOutlineColor(sf::Color::Green);
+	this->enemy.setOutlineThickness(1.f);
+}
+
+// Const/Destr
 Game::Game()
 {
 	this->initVar();
 	this->initWindow();
+	this->initEnemies();
 }
 
 Game::~Game()
@@ -25,6 +38,7 @@ Game::~Game()
 	delete this->window;
 }
 
+//=========================================//
 
 // Методы игры
 void Game::pollEvents()
@@ -53,9 +67,12 @@ void Game::update()
 void Game::render()
 {
 	// Отрисовка объектов игры 
-	this->window->clear(sf::Color(255, 0 , 0, 255));
+	this->window->clear();
+	this->window->draw(this->enemy);
 	this->window->display();
 }
+
+//=========================================//
 
 // Методы доступа 
 const bool Game::getRunning() const
