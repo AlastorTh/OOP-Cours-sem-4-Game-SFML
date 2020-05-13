@@ -10,6 +10,7 @@ int main()
 
 	Game game;
 	
+	std::srand(static_cast<unsigned>(time(NULL)));
 
 	// Цикл игры
 	while (game.getRunning())

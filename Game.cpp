@@ -5,6 +5,10 @@ void Game::initVar()
 {
 	this->window = nullptr;
 
+	this->points = 0;
+	this->enemySpawnTimerMax = 1000.f;
+	this->enemySpawnTimer = this->enemySpawnTimerMax;
+	this->maxEnemies = 5;
 }
 
 void Game::initWindow()
@@ -16,21 +20,14 @@ void Game::initWindow()
 	this->window->setFramerateLimit(60); // fps 
 }
 
-void Game::initEnemies()
-{
-	this->enemy.setPosition(10.f, 10.f);
-	this->enemy.setSize(sf::Vector2f(100.f, 100.f));
-	this->enemy.setFillColor(sf::Color::Cyan);
-	this->enemy.setOutlineColor(sf::Color::Green);
-	this->enemy.setOutlineThickness(1.f);
-}
+
 
 // Const/Destr
 Game::Game()
 {
 	this->initVar();
 	this->initWindow();
-	this->initEnemies();
+	//this->initEnemies();
 }
 
 Game::~Game()
@@ -58,18 +55,85 @@ void Game::pollEvents()
 	}
 }
 
+void Game::spawnEnemy()
+{
+	this->TestEnemy.getShape().setPosition(
+		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->TestEnemy.getShape().getSize().x)),
+		static_cast<float>(rand() % static_cast<int>(this->window->getSize().y - this->TestEnemy.getShape().getSize().y))
+	);
+
+	this->TestEnemy.getShape().setFillColor(sf::Color::Green);
+
+	this->enemies.push_back(this->TestEnemy);
+}
+
 
 void Game::update()
 {
 	this->pollEvents();
+
+	// Обновление позиции курсора
+
+	//std::cout << "mouse pos:" << sf::Mouse::getPosition().x << " " << sf::Mouse::getPosition().y << std::endl; // позиция мыши на всём экране
+
+	
+	//std::cout << "mouse pos:" 
+	//	<< sf::Mouse::getPosition(*this->window).x << " " 
+	//	<< sf::Mouse::getPosition(*this->window).y << std::endl; // позиция мыши в окне 
+
+	this->updateMousePositions();
+
+	this->updateEnemies();
+}
+
+void Game::updateEnemies()
+{
+	/*Обновляет таймер спауна врагов
+	и осуществляет спаун когда число врагов меньше максимума*/
+
+	if (this->enemies.size() < this->maxEnemies)
+		if (this->enemySpawnTimer >= this->enemySpawnTimerMax)
+		{
+			// Спаун врага и обнуление таймера
+			this->spawnEnemy();
+			this->enemySpawnTimer = 0.f;
+		}
+		else
+			this->enemySpawnTimer += 1.f;
+
+	for (auto& e : this->enemies)
+	{
+		e.getShape().move(0.f, 5.f);
+	}
+}
+
+
+void Game::updateMousePositions()
+{
+	// Обновляет положение мыши относительно окна
+
+	this->mousePositionWindow = sf::Mouse::getPosition(*this->window);
 }
 
 void Game::render()
 {
 	// Отрисовка объектов игры 
 	this->window->clear();
-	this->window->draw(this->enemy);
+	//this->window->draw(this->TestEnemy.getShape());
+	//this->window->display();
+	
+	this->renderEnemies();
+
 	this->window->display();
+}
+
+void Game::renderEnemies()
+{
+	for (auto& e : this->enemies)
+	{
+		this->window->draw(e.getShape());
+	}
+	
 }
 
 //=========================================//
