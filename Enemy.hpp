@@ -10,12 +10,13 @@ public:
 	//virtual bool collision() = 0; // что-то про коллизии
 	virtual ~Entity() = default;
 };
+
+
 class Enemy: public Entity
 {
 protected:
-	sf::RectangleShape shape;
+	//int points;
 	
-	//sf::Shape();
     //position
 	
 public:
@@ -23,10 +24,9 @@ public:
 	//Enemy();
 	//~Enemy();
 
-	sf::RectangleShape &getShape()
-	{
-		return shape;
-	}
+	void update_enemy();
+	void renderenemy();
+	virtual sf::Shape& getshape() = 0;
 };
 
 
@@ -34,13 +34,14 @@ public:
 
 class SquareEnemy: public Enemy
 {
-private:
-
+protected:
+	sf::RectangleShape shape;
 public:
 
 	SquareEnemy();
 	~SquareEnemy();
-
+	
+	virtual sf::RectangleShape& getshape() override;
 };
 
 

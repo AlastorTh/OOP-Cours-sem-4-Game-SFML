@@ -19,3 +19,8 @@ SquareEnemy::~SquareEnemy()
 {
 
 }
+
+sf::RectangleShape& SquareEnemy::getshape()
+{
+	return shape;
+}

@@ -28,18 +28,18 @@ private:
 	// Объекты игры
 	//sf::RectangleShape enemy;
 	//std::vector<sf::RectangleShape> enemies;
-	unsigned points;
+	//unsigned points;
 	float enemySpawnTimer;
 	float enemySpawnTimerMax;
 	unsigned maxEnemies;
 
-	std::vector<Enemy> enemies;
-	SquareEnemy TestEnemy;
+	std::vector<Enemy*> enemies;
+	SquareEnemy* TestEnemy = new SquareEnemy;
 	
 	// Функции инициализации
 	void initVar();
 	void initWindow();
-	void initEnemies();
+	//void initEnemies();
 
 public:
 

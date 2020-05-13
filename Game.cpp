@@ -5,7 +5,7 @@ void Game::initVar()
 {
 	this->window = nullptr;
 
-	this->points = 0;
+	//this->points = 0;
 	this->enemySpawnTimerMax = 1000.f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
 	this->maxEnemies = 5;
@@ -57,12 +57,12 @@ void Game::pollEvents()
 
 void Game::spawnEnemy()
 {
-	this->TestEnemy.getShape().setPosition(
-		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->TestEnemy.getShape().getSize().x)),
-		static_cast<float>(rand() % static_cast<int>(this->window->getSize().y - this->TestEnemy.getShape().getSize().y))
+	this->TestEnemy->getshape().setPosition(
+		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->TestEnemy->getshape().getSize().x)),
+		static_cast<float>(rand() % static_cast<int>(this->window->getSize().y - this->TestEnemy->getshape().getSize().y))
 	);
 
-	this->TestEnemy.getShape().setFillColor(sf::Color::Green);
+	this->TestEnemy->getshape().setFillColor(sf::Color::Green);
 
 	this->enemies.push_back(this->TestEnemy);
 }
@@ -103,7 +103,7 @@ void Game::updateEnemies()
 
 	for (auto& e : this->enemies)
 	{
-		e.getShape().move(0.f, 5.f);
+		e->getshape().move(0.f, 5.f);
 	}
 }
 
@@ -131,7 +131,7 @@ void Game::renderEnemies()
 {
 	for (auto& e : this->enemies)
 	{
-		this->window->draw(e.getShape());
+		this->window->draw(e->getshape());
 	}
 	
 }
