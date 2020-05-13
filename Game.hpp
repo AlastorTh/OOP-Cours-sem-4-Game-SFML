@@ -24,6 +24,7 @@ private:
 
 	//положение курсора
 	sf::Vector2i mousePositionWindow;
+	sf::Vector2f mousePositionView;
 
 	// Объекты игры
 	//sf::RectangleShape enemy;
@@ -34,7 +35,7 @@ private:
 	unsigned maxEnemies;
 
 	std::vector<Enemy*> enemies;
-	SquareEnemy* TestEnemy = new SquareEnemy;
+	SquareEnemy* TestEnemy= new SquareEnemy;
 	
 	// Функции инициализации
 	void initVar();

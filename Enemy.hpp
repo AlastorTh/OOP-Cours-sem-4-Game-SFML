@@ -39,7 +39,7 @@ protected:
 public:
 
 	SquareEnemy();
-	~SquareEnemy();
+	
 	
 	virtual sf::RectangleShape& getshape() override;
 };

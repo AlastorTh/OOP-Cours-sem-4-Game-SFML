@@ -15,10 +15,7 @@ SquareEnemy::SquareEnemy()
 	this->shape.setOutlineThickness(1.f);
 }
 
-SquareEnemy::~SquareEnemy()
-{
 
-}
 
 sf::RectangleShape& SquareEnemy::getshape()
 {

@@ -6,7 +6,7 @@ void Game::initVar()
 	this->window = nullptr;
 
 	//this->points = 0;
-	this->enemySpawnTimerMax = 1000.f;
+	this->enemySpawnTimerMax = 10.f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
 	this->maxEnemies = 5;
 }
@@ -59,12 +59,16 @@ void Game::spawnEnemy()
 {
 	this->TestEnemy->getshape().setPosition(
 		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->TestEnemy->getshape().getSize().x)),
-		static_cast<float>(rand() % static_cast<int>(this->window->getSize().y - this->TestEnemy->getshape().getSize().y))
+		0.f
 	);
 
 	this->TestEnemy->getshape().setFillColor(sf::Color::Green);
 
 	this->enemies.push_back(this->TestEnemy);
+
+	// удаление врагов внизу экрана
+
+
 }
 
 
@@ -92,6 +96,7 @@ void Game::updateEnemies()
 	и осуществляет спаун когда число врагов меньше максимума*/
 
 	if (this->enemies.size() < this->maxEnemies)
+	{
 		if (this->enemySpawnTimer >= this->enemySpawnTimerMax)
 		{
 			// Спаун врага и обнуление таймера
@@ -101,9 +106,28 @@ void Game::updateEnemies()
 		else
 			this->enemySpawnTimer += 1.f;
 
-	for (auto& e : this->enemies)
+	}
+
+	// сдвинуть противников
+
+	/*for (auto& e : this->enemies)
 	{
 		e->getshape().move(0.f, 5.f);
+	}*/
+	
+	for (int i = 0; i < this->enemies.size(); i++)
+	{
+		this->enemies[i]->getshape().move(0.f, 1.f);
+
+		// Чекать нажата ли кнопка мыши
+
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			if (this->enemies[i]->getshape().getGlobalBounds().contains(this->mousePositionView))
+			{
+				this->enemies.erase(this->enemies.begin() + i);
+			}
+		}
 	}
 }
 
@@ -113,6 +137,7 @@ void Game::updateMousePositions()
 	// Обновляет положение мыши относительно окна
 
 	this->mousePositionWindow = sf::Mouse::getPosition(*this->window);
+	this->mousePositionView = this->window->mapPixelToCoords(this->mousePositionWindow);
 }
 
 void Game::render()
