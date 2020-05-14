@@ -6,9 +6,9 @@ void Game::initVar()
 	this->window = nullptr;
 
 	//this->points = 0;
-	this->enemySpawnTimerMax = 10.f;
+	this->enemySpawnTimerMax = 30.f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
-	this->maxEnemies = 5;
+	this->maxEnemies = 10;
 }
 
 void Game::initWindow()
@@ -57,14 +57,16 @@ void Game::pollEvents()
 
 void Game::spawnEnemy()
 {
-	this->TestEnemy->getshape().setPosition(
+	this->enemies.push_back(new SquareEnemy);
+
+	this->enemies[enemies.size() - 1]->getshape().setPosition(
 		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->TestEnemy->getshape().getSize().x)),
 		0.f
 	);
 
-	this->TestEnemy->getshape().setFillColor(sf::Color::Green);
+	this->enemies[enemies.size()-1]->getshape().setFillColor(sf::Color::Green);
 
-	this->enemies.push_back(this->TestEnemy);
+	
 
 	// удаление врагов внизу экрана
 

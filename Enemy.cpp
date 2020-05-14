@@ -11,7 +11,7 @@ SquareEnemy::SquareEnemy()
 	this->shape.setSize(sf::Vector2f(50.f, 50.f));
 	//this->enemy.setScale(sf::Vector2f(0.5f, 0.5f)); // масштабирование врага
 	this->shape.setFillColor(sf::Color::Cyan);
-	this->shape.setOutlineColor(sf::Color::Green);
+	this->shape.setOutlineColor(sf::Color::Red);
 	this->shape.setOutlineThickness(1.f);
 }
 
