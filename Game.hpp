@@ -33,9 +33,10 @@ private:
 	float enemySpawnTimer;
 	float enemySpawnTimerMax;
 	unsigned maxEnemies;
+	unsigned points;
 
 	std::vector<Enemy*> enemies;
-	SquareEnemy* TestEnemy= new SquareEnemy;
+	//SquareEnemy* TestEnemy= new SquareEnemy;
 	
 	// Функции инициализации
 	void initVar();
@@ -55,8 +56,12 @@ public:
 	void updateMousePositions();
 	void render();
 	void renderEnemies();
-	const bool getRunning() const;
 	void pollEvents();
 	void spawnEnemy();
+
+	// геттеры 
+
+	const bool getRunning() const;
+	unsigned getPoints();
 };
 

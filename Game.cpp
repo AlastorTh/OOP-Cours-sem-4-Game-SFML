@@ -9,6 +9,7 @@ void Game::initVar()
 	this->enemySpawnTimerMax = 30.f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
 	this->maxEnemies = 10;
+	this->mouseHeld = false;
 }
 
 void Game::initWindow()
@@ -57,14 +58,22 @@ void Game::pollEvents()
 
 void Game::spawnEnemy()
 {
-	this->enemies.push_back(new SquareEnemy);
-
+	int randnum = rand() % 11;
+	if (randnum < 9)
+	{
+		this->enemies.push_back(new SquareEnemy);
+	}
+	else
+	{
+		this->enemies.push_back(new CircleEnemy);
+	}
+	
 	this->enemies[enemies.size() - 1]->getshape().setPosition(
-		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->TestEnemy->getshape().getSize().x)),
+		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemies.back()->getSizer())),
 		0.f
 	);
 
-	this->enemies[enemies.size()-1]->getshape().setFillColor(sf::Color::Green);
+	//this->enemies[enemies.size()-1]->getshape().setFillColor(sf::Color::Green);
 
 	
 
@@ -116,20 +125,47 @@ void Game::updateEnemies()
 	{
 		e->getshape().move(0.f, 5.f);
 	}*/
-	
+
+	// Обновление состояния врагов и перемещение
 	for (int i = 0; i < this->enemies.size(); i++)
 	{
-		this->enemies[i]->getshape().move(0.f, 1.f);
+		bool deleted = false;
 
-		// Чекать нажата ли кнопка мыши
+		this->enemies[i]->getshape().move(0.f, 5.f);
+
+		// Проверить нажата ли кнопка мыши
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			if (this->enemies[i]->getshape().getGlobalBounds().contains(this->mousePositionView))
 			{
-				this->enemies.erase(this->enemies.begin() + i);
+				deleted = true;
+
+				// + очки
+				if (dynamic_cast<SquareEnemy*>(enemies[i]))
+				{
+					points += 50;
+					std::cout << points << std::endl;
+				}
+
+				if (dynamic_cast<CircleEnemy*>(enemies[i]))
+				{
+					points += 100;
+					std::cout << points << std::endl;
+				}
 			}
 		}
+
+		if (enemies[i]->getshape().getPosition().y > window->getSize().y)
+		{
+			deleted = true;
+		}
+
+		if (deleted)
+		{
+			this->enemies.erase(this->enemies.begin() + i);
+		}
+		
 	}
 }
 
@@ -158,7 +194,7 @@ void Game::renderEnemies()
 {
 	for (auto& e : this->enemies)
 	{
-		this->window->draw(e->getshape());
+		window->draw(e->getshape());
 	}
 	
 }
@@ -169,5 +205,10 @@ void Game::renderEnemies()
 const bool Game::getRunning() const
 {
 	return this->window->isOpen();
+}
+
+unsigned Game::getPoints()
+{
+	return points;
 }
 

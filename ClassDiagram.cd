@@ -24,7 +24,7 @@
   <Class Name="CircleEnemy" Collapsed="true">
     <Position X="0.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQAAAAAABAA=</HashCode>
       <FileName>Enemy.hpp</FileName>
     </TypeIdentifier>
   </Class>

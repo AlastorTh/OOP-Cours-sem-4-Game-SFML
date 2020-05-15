@@ -9,6 +9,7 @@ class Entity
 public:
 	//virtual bool collision() = 0; // что-то про коллизии
 	virtual ~Entity() = default;
+	virtual float getSizer() = 0;
 };
 
 
@@ -22,10 +23,10 @@ protected:
 public:
 	
 	//Enemy();
-	//~Enemy();
+	virtual ~Enemy() = default;
 
-	void update_enemy();
-	void renderenemy();
+	//void update_enemy();
+	//void renderenemy();
 	virtual sf::Shape& getshape() = 0;
 };
 
@@ -39,9 +40,10 @@ protected:
 public:
 
 	SquareEnemy();
-	
+	//~SquareEnemy();
 	
 	virtual sf::RectangleShape& getshape() override;
+	virtual float getSizer() override;
 };
 
 
@@ -49,13 +51,18 @@ public:
 class CircleEnemy : public Enemy
 {
 private:
-
+	sf::CircleShape shape;
 
 public:
 
+	CircleEnemy();
+	//~CircleEnemy();
+	virtual sf::CircleShape& getshape() override;
+	virtual float getSizer() override;
 };
 
-class SpikyEnemy : public SquareEnemy, public CircleEnemy
+
+class SpikyEnemy : public CircleEnemy
 {
 
 private:
