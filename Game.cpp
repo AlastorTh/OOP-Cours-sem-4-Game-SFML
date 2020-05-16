@@ -6,10 +6,11 @@ void Game::initVar()
 	this->window = nullptr;
 
 	//this->points = 0;
+	this->endGame = false;
 	this->enemySpawnTimerMax = 30.f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
 	this->maxEnemies = 10;
-	this->mouseHeld = false;
+	this->health = 10;
 }
 
 void Game::initWindow()
@@ -21,6 +22,19 @@ void Game::initWindow()
 	this->window->setFramerateLimit(60); // fps 
 }
 
+void Game::initFonts()
+{
+	this->font.loadFromFile("Fonts/Apple ][.ttf");
+}
+
+void Game::initText()
+{
+	this->uiText.setFont(this->font);
+	this->uiText.setCharacterSize(12);
+	//this->uiText.setFillColor(sf::Color::White);
+	this->uiText.setString("NONE");
+}
+
 
 
 // Const/Destr
@@ -28,6 +42,8 @@ Game::Game()
 {
 	this->initVar();
 	this->initWindow();
+	this->initFonts();
+	this->initText();
 	//this->initEnemies();
 }
 
@@ -58,16 +74,20 @@ void Game::pollEvents()
 
 void Game::spawnEnemy()
 {
-	int randnum = rand() % 11;
-	if (randnum < 9)
+	int randnum = rand() % 100;
+	if (randnum < 80)
 	{
 		this->enemies.push_back(new SquareEnemy);
+		
 	}
-	else
+	else if(80 <randnum < 90)
 	{
 		this->enemies.push_back(new CircleEnemy);
 	}
-	
+	if(randnum>90)
+	{
+		this->enemies.push_back(new SpikyEnemy);
+	}
 	this->enemies[enemies.size() - 1]->getshape().setPosition(
 		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemies.back()->getSizer())),
 		0.f
@@ -82,23 +102,37 @@ void Game::spawnEnemy()
 
 }
 
+void Game::TextEndGame()
+{
+	
+	std::stringstream ss;
 
+	ss << "GAME " << std::endl
+		<< "OVER ";
+	this->uiText.setString(ss.str());
+	
+}
+
+
+// Обновление состояний
 void Game::update()
 {
 	this->pollEvents();
 
-	// Обновление позиции курсора
+	if (this->endGame == false)
+	{
+		this->updateMousePositions();
 
-	//std::cout << "mouse pos:" << sf::Mouse::getPosition().x << " " << sf::Mouse::getPosition().y << std::endl; // позиция мыши на всём экране
+		this->updateText();
 
-	
-	//std::cout << "mouse pos:" 
-	//	<< sf::Mouse::getPosition(*this->window).x << " " 
-	//	<< sf::Mouse::getPosition(*this->window).y << std::endl; // позиция мыши в окне 
+		this->updateEnemies();
 
-	this->updateMousePositions();
-
-	this->updateEnemies();
+	}
+	if (this->health <= 0)
+	{
+		this->endGame = true;
+		
+	}
 }
 
 void Game::updateEnemies()
@@ -153,12 +187,26 @@ void Game::updateEnemies()
 					points += 100;
 					std::cout << points << std::endl;
 				}
+
+				if (dynamic_cast<SpikyEnemy*>(enemies[i]))
+				{
+					health -= 1;
+					std::cout << points << std::endl;
+				}
+
+				
 			}
 		}
 
-		if (enemies[i]->getshape().getPosition().y > window->getSize().y)
+		if (enemies[i]->getshape().getPosition().y > window->getSize().y) // враг за экраном
 		{
 			deleted = true;
+			if (!dynamic_cast<SpikyEnemy*>(enemies[i]))
+			{
+				health -= 1;
+			}
+			
+			std::cout << "Health:" << health << std::endl;
 		}
 
 		if (deleted)
@@ -178,6 +226,27 @@ void Game::updateMousePositions()
 	this->mousePositionView = this->window->mapPixelToCoords(this->mousePositionWindow);
 }
 
+void Game::updateText()
+{
+
+
+	std::stringstream ss;
+	if (!endGame)
+	{
+	ss << "Points: " << this->points << std::endl
+		<< "Health: " << this->health;
+	this->uiText.setString(ss.str());
+
+	}
+	else
+	{
+		TextEndGame();
+	}
+}
+
+
+//=========================================//
+
 void Game::render()
 {
 	// Отрисовка объектов игры 
@@ -185,18 +254,34 @@ void Game::render()
 	//this->window->draw(this->TestEnemy.getShape());
 	//this->window->display();
 	
-	this->renderEnemies();
+	if (!endGame)
+	{
+	this->renderEnemies(*this->window);
 
+	
+
+	}
+	else	
+	{
+		TextEndGame();
+	}
+
+	this->renderText(*this->window);
 	this->window->display();
 }
 
-void Game::renderEnemies()
+void Game::renderEnemies(sf::RenderTarget& target)
 {
 	for (auto& e : this->enemies)
 	{
-		window->draw(e->getshape());
+		target.draw(e->getshape());
 	}
 	
+}
+
+void Game::renderText(sf::RenderTarget& target)
+{
+	target.draw(this->uiText);
 }
 
 //=========================================//
@@ -205,6 +290,11 @@ void Game::renderEnemies()
 const bool Game::getRunning() const
 {
 	return this->window->isOpen();
+}
+
+const bool Game::getEndGame() const
+{
+	return this->endGame;
 }
 
 unsigned Game::getPoints()

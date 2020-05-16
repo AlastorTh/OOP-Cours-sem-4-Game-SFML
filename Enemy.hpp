@@ -35,7 +35,7 @@ public:
 
 class SquareEnemy: public Enemy
 {
-protected:
+private:
 	sf::RectangleShape shape;
 public:
 
@@ -50,7 +50,7 @@ public:
 
 class CircleEnemy : public Enemy
 {
-private:
+protected:
 	sf::CircleShape shape;
 
 public:
@@ -68,5 +68,5 @@ class SpikyEnemy : public CircleEnemy
 private:
 
 public:
-
+	SpikyEnemy();
 };

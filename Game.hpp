@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <ctime>
+#include <sstream>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -26,22 +27,29 @@ private:
 	sf::Vector2i mousePositionWindow;
 	sf::Vector2f mousePositionView;
 
-	// Объекты игры
-	//sf::RectangleShape enemy;
-	//std::vector<sf::RectangleShape> enemies;
-	//unsigned points;
-	float enemySpawnTimer;
-	float enemySpawnTimerMax;
-	unsigned maxEnemies;
-	unsigned points;
-
-	std::vector<Enemy*> enemies;
-	//SquareEnemy* TestEnemy= new SquareEnemy;
-	
 	// Функции инициализации
 	void initVar();
 	void initWindow();
-	//void initEnemies();
+	void initFonts();
+	void initText();
+
+	// Сторонние ресурсы
+	sf::Font font;
+
+	// Текст
+	sf::Text uiText;
+	// Объекты игры
+	
+	float enemySpawnTimer;
+	float enemySpawnTimerMax;
+    unsigned maxEnemies;
+	std::vector<Enemy*> enemies;
+	unsigned points;
+	int health;
+	
+	bool endGame;
+	
+	
 
 public:
 
@@ -52,16 +60,25 @@ public:
 	// методы игры
 
 	void update();
+
 	void updateEnemies();
 	void updateMousePositions();
+	void updateText();
+
 	void render();
-	void renderEnemies();
+
+	void renderEnemies(sf::RenderTarget& target);
+	void renderText(sf::RenderTarget& target);
+
 	void pollEvents();
 	void spawnEnemy();
+	void TextEndGame();
+	
 
 	// геттеры 
 
 	const bool getRunning() const;
+	const bool getEndGame() const;
 	unsigned getPoints();
 };
 

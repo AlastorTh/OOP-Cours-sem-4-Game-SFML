@@ -46,3 +46,12 @@ float CircleEnemy::getSizer()
 {
 	return shape.getRadius();
 }
+
+SpikyEnemy::SpikyEnemy()
+{
+	this->shape.setPosition(10.f, 10.f);
+	this->shape.setRadius(20.f);
+	this->shape.setFillColor(sf::Color::Magenta);
+	this->shape.setOutlineColor(sf::Color::Red);
+	this->shape.setOutlineThickness(2.f);
+}

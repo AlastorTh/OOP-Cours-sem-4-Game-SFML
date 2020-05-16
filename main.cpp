@@ -16,10 +16,10 @@ int main()
 	while (game.getRunning())
 	{
 		
-		// Обновление состояния
+		
 		game.update();
 
-		// Рендер 
+		 
 		game.render();
 	}
 	return 0;
