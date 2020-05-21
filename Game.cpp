@@ -1,41 +1,49 @@
+
+
+
 #include "Game.hpp"
 
-// init/destruct
 void Game::initVar()
 {
-	this->window = nullptr;
+	// инициализация основных переменных игры
 
-	//this->points = 0;
+	this->window = nullptr;
+	this->points = 0;
 	this->endGame = false;
 	this->enemySpawnTimerMax = 30.f;
 	this->enemySpawnTimer = this->enemySpawnTimerMax;
 	this->maxEnemies = 10;
 	this->health = 10;
+	this->MoveY = 5.f;
 }
 
 void Game::initWindow()
 {
+	// инициализация переменных окна
+
 	this->videoMode.height = 600;
 	this->videoMode.width = 800;
 	this->window = new sf::RenderWindow(sf::VideoMode(this->videoMode), "My Test Win", sf::Style::Titlebar
-	| sf::Style::Close);
+	| sf::Style::Close); // создать окно с кнопкой "закрыть" без возможности масштабирования 
 	this->window->setFramerateLimit(60); // fps 
 }
 
 void Game::initFonts()
 {
+	// подключение стороннего файла шрифта
 	this->font.loadFromFile("Fonts/Apple ][.ttf");
 }
 
 void Game::initText()
 {
+	// установка используемого шрифта и его размера
+
 	this->uiText.setFont(this->font);
 	this->uiText.setCharacterSize(12);
-	//this->uiText.setFillColor(sf::Color::White);
 	this->uiText.setString("NONE");
 }
 
-
+//=========================================//
 
 // Const/Destr
 Game::Game()
@@ -44,7 +52,6 @@ Game::Game()
 	this->initWindow();
 	this->initFonts();
 	this->initText();
-	//this->initEnemies();
 }
 
 Game::~Game()
@@ -55,8 +62,11 @@ Game::~Game()
 //=========================================//
 
 // Методы игры
+
 void Game::pollEvents()
 {
+	// обработка событий
+
 	while (this->window->pollEvent(this->ev))
 	{
 		switch (this->ev.type)
@@ -74,37 +84,42 @@ void Game::pollEvents()
 
 void Game::spawnEnemy()
 {
-	int randnum = rand() % 100;
+	// Спаун врага
+
+	int randnum = rand() % 200;
+
+	// создание случайного врага
+	// 80% - квадрат, 10% - кружок, 10% - шипастый враг
 	if (randnum < 80)
 	{
 		this->enemies.push_back(new SquareEnemy);
 		
 	}
-	else if(80 <randnum < 90)
+	else if(randnum > 80 && randnum < 140)
 	{
 		this->enemies.push_back(new CircleEnemy);
 	}
-	if(randnum>90)
+	else if(randnum > 140 && randnum < 180)
 	{
 		this->enemies.push_back(new SpikyEnemy);
 	}
+	else
+	{
+		this->enemies.push_back(new SquareSpeedUpEnemy);
+	}
+
 	this->enemies[enemies.size() - 1]->getshape().setPosition(
 		static_cast<float>(rand() % static_cast<int>(this->window->getSize().x - this->enemies.back()->getSizer())),
-		0.f
-	);
-
-	//this->enemies[enemies.size()-1]->getshape().setFillColor(sf::Color::Green);
-
-	
-
-	// удаление врагов внизу экрана
+		0.f); //  установка положения текущего врага в случайную точку верха окна без задевания границ
 
 
 }
 
+
 void Game::TextEndGame()
 {
-	
+	// Установка текстового сообщения о завершении игры
+
 	std::stringstream ss;
 
 	ss << "GAME " << std::endl
@@ -114,9 +129,11 @@ void Game::TextEndGame()
 }
 
 
-// Обновление состояний
+
 void Game::update()
 {
+	// Обновление состояний
+
 	this->pollEvents();
 
 	if (this->endGame == false)
@@ -125,7 +142,7 @@ void Game::update()
 
 		this->updateText();
 
-		this->updateEnemies();
+		this->updateEnemies(this->MoveY);
 
 	}
 	if (this->health <= 0)
@@ -135,7 +152,7 @@ void Game::update()
 	}
 }
 
-void Game::updateEnemies()
+void Game::updateEnemies(float moveY)
 {
 	/*Обновляет таймер спауна врагов
 	и осуществляет спаун когда число врагов меньше максимума*/
@@ -153,30 +170,24 @@ void Game::updateEnemies()
 
 	}
 
-	// сдвинуть противников
-
-	/*for (auto& e : this->enemies)
-	{
-		e->getshape().move(0.f, 5.f);
-	}*/
 
 	// Обновление состояния врагов и перемещение
 	for (int i = 0; i < this->enemies.size(); i++)
 	{
 		bool deleted = false;
 
-		this->enemies[i]->getshape().move(0.f, 5.f);
+		this->enemies[i]->getshape().move(0.f, moveY);
 
 		// Проверить нажата ли кнопка мыши
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			if (this->enemies[i]->getshape().getGlobalBounds().contains(this->mousePositionView))
+			if (this->enemies[i]->getshape().getGlobalBounds().contains(this->mousePositionView)) // условие наличия курсора внутри врага
 			{
 				deleted = true;
 
-				// + очки
-				if (dynamic_cast<SquareEnemy*>(enemies[i]))
+				// обработка текущего врага(выдача очков/штрафа при нажатии)
+				if (dynamic_cast<SquareEnemy*>(enemies[i])) 
 				{
 					points += 50;
 					std::cout << points << std::endl;
@@ -193,7 +204,11 @@ void Game::updateEnemies()
 					health -= 1;
 					std::cout << points << std::endl;
 				}
-
+				if (dynamic_cast<SquareSpeedUpEnemy*>(enemies[i]))
+				{
+					points += 200;
+					this->MoveY += 10.f;
+				}
 				
 			}
 		}
@@ -206,12 +221,12 @@ void Game::updateEnemies()
 				health -= 1;
 			}
 			
-			std::cout << "Health:" << health << std::endl;
+			
 		}
 
-		if (deleted)
+		if (deleted) 
 		{
-			this->enemies.erase(this->enemies.begin() + i);
+			this->enemies.erase(this->enemies.begin() + i); // удалить врага из контейнера
 		}
 		
 	}
@@ -223,12 +238,13 @@ void Game::updateMousePositions()
 	// Обновляет положение мыши относительно окна
 
 	this->mousePositionWindow = sf::Mouse::getPosition(*this->window);
-	this->mousePositionView = this->window->mapPixelToCoords(this->mousePositionWindow);
+	this->mousePositionView = this->window->mapPixelToCoords(this->mousePositionWindow); // Связывает положение курсора с соотв. пикселем в окне
 }
+
 
 void Game::updateText()
 {
-
+	// обновляет выводимый текст
 
 	std::stringstream ss;
 	if (!endGame)
@@ -238,10 +254,7 @@ void Game::updateText()
 	this->uiText.setString(ss.str());
 
 	}
-	else
-	{
-		TextEndGame();
-	}
+	
 }
 
 
@@ -251,14 +264,11 @@ void Game::render()
 {
 	// Отрисовка объектов игры 
 	this->window->clear();
-	//this->window->draw(this->TestEnemy.getShape());
-	//this->window->display();
+
 	
 	if (!endGame)
 	{
 	this->renderEnemies(*this->window);
-
-	
 
 	}
 	else	
@@ -266,12 +276,13 @@ void Game::render()
 		TextEndGame();
 	}
 
-	this->renderText(*this->window);
-	this->window->display();
+	this->renderText(*this->window); // отрисовать текст в окно
+	this->window->display(); // отобразить окно
 }
 
 void Game::renderEnemies(sf::RenderTarget& target)
 {
+	// отрисовка врагов
 	for (auto& e : this->enemies)
 	{
 		target.draw(e->getshape());
@@ -281,10 +292,12 @@ void Game::renderEnemies(sf::RenderTarget& target)
 
 void Game::renderText(sf::RenderTarget& target)
 {
+	// отрисовка текста
 	target.draw(this->uiText);
 }
 
 //=========================================//
+
 
 // Методы доступа 
 const bool Game::getRunning() const
@@ -295,10 +308,7 @@ const bool Game::getRunning() const
 const bool Game::getEndGame() const
 {
 	return this->endGame;
+
 }
 
-unsigned Game::getPoints()
-{
-	return points;
-}
 

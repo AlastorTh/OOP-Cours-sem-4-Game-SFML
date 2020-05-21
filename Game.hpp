@@ -9,8 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
-//#include<SFML/Audio.hpp>
-//#include<SFML/Network.hpp>
+
 
 /*
 Класс, играющий роль игрового "движка". 
@@ -19,13 +18,13 @@ class Game
 {
 private:
 	//переменные окна
-	sf::RenderWindow* window; 
-	sf::Event ev;
-	sf::VideoMode videoMode;
+	sf::RenderWindow* window; // переменная окна
+	sf::Event ev; // переменная события(нажатие кнопки мыши/клавиатуры)
+	sf::VideoMode videoMode; // разрешение окна
 
 	//положение курсора
-	sf::Vector2i mousePositionWindow;
-	sf::Vector2f mousePositionView;
+	sf::Vector2i mousePositionWindow; // пара интов задающая положение курсора в окне
+	sf::Vector2f mousePositionView; // пара чисел с плавающей точкой, привязываемая к 
 
 	// Функции инициализации
 	void initVar();
@@ -46,6 +45,7 @@ private:
 	std::vector<Enemy*> enemies;
 	unsigned points;
 	int health;
+	float MoveY;
 	
 	bool endGame;
 	
@@ -61,7 +61,7 @@ public:
 
 	void update();
 
-	void updateEnemies();
+	void updateEnemies(float moveX);
 	void updateMousePositions();
 	void updateText();
 
@@ -79,6 +79,5 @@ public:
 
 	const bool getRunning() const;
 	const bool getEndGame() const;
-	unsigned getPoints();
 };
 

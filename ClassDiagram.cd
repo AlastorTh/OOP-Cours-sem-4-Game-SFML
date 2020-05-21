@@ -38,7 +38,7 @@
   <Class Name="Game" Collapsed="true">
     <Position X="5.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ApIpAACggAAAAAACFAAAAAABAgiAEAAJhBEACAAUBDg=</HashCode>
+      <HashCode>ApIpAACggAAAEAACFAAAAAABAgiAEAAJhBEACAAUBBg=</HashCode>
       <FileName>Game.hpp</FileName>
     </TypeIdentifier>
   </Class>
